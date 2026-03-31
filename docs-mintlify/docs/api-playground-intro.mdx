@@ -1,0 +1,28 @@
+---
+title: Testar a API CRIS
+description: Como usar o playground interativo e o fluxo de autenticação.
+icon: "flask"
+---
+
+## Antes de enviar pedidos
+
+Os pedidos do playground são enviados para o **servidor de produção** indicado na referência OpenAPI (`cris.clinicaderesultado.com.br`). Use credenciais e dados de teste com cuidado.
+
+O Mintlify encaminha normalmente os pedidos através de um **proxy**. Se obtiver erros de rede ou CORS ao desativar o proxy nas definições, volte a usar o proxy ou teste com cURL/Postman a partir do seu ambiente.
+
+## Fluxo de autenticação
+
+1. Abra a operação **Login API** (`POST /loginApi`).
+2. Envie o corpo JSON com `login` e `password` do utilizador CRIS (sem prefixo Bearer).
+3. Copie o **token** devolvido na resposta.
+4. Nos restantes endpoints, preencha a autenticação **Bearer** com esse token (ou o formato exato que o CRIS esperar no header `Authorization`, conforme a resposta do login).
+
+O sistema distingue **admin_master** (todas as unidades) e **licenciado_unidade** (só a clínica associada). Muitos filtros exigem `clinica` explicitamente para admin_master.
+
+## Onde está a documentação narrativa
+
+Os guias com contexto de negócio, exemplos e avisos continuam no separador **Documentação**, nas secções CRIS — Entrada e CRIS — Saída. Esta referência serve para **experimentar** os mesmos caminhos REST descritos ali.
+
+## Bitrix24
+
+A API do Bitrix24 não está neste playground (URLs e tokens são por portal). Consulte as páginas Bitrix24 CRM na documentação e a documentação oficial do Bitrix24.

@@ -1,0 +1,670 @@
+openapi: 3.1.0
+info:
+  title: CRIS REST API
+  version: "1.0.0"
+  description: |
+    API REST do CRIS (Clínica de Resultado). Use o playground para enviar pedidos reais ao ambiente configurado em `servers`.
+    Obtenha o token com **loginApi** e utilize-o no campo Bearer (header `Authorization`) nos restantes endpoints.
+
+servers:
+  - url: https://cris.clinicaderesultado.com.br/rest/v1
+    description: Produção
+
+tags:
+  - name: Autenticação
+    description: Token para os demais endpoints
+  - name: Entrada — Atração
+    description: Cadastro e atualização de contatos
+  - name: Entrada — Conversão e entrega
+    description: Agendamentos
+  - name: Entrada — Apoio
+    description: Campanhas
+  - name: Saída — Atração
+    description: Lista de prospects e clientes
+  - name: Saída — Conversão
+    description: Orçamentos e vendas
+  - name: Saída — Entrega e retenção
+    description: Agendamentos
+  - name: Saída — Apoio
+    description: Listas de referência (IDs)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token retornado por `POST /loginApi` (valor sem prefixo "Bearer" se a API esperar só o token; caso contrário inclua conforme o CRIS).
+
+  parameters:
+    PaginaAtual:
+      name: pagina_atual
+      in: query
+      required: true
+      schema:
+        type: integer
+        example: 1
+      description: Número da página atual.
+    PorPagina:
+      name: por_pagina
+      in: query
+      required: true
+      schema:
+        type: integer
+        example: 20
+      description: Registros por página. Recomenda-se um valor baixo para não sobrecarregar a API.
+    ClinicaMaster:
+      name: clinica
+      in: query
+      required: true
+      schema:
+        type: integer
+      description: ID da clínica. Preenchido automaticamente para usuários de clínica. Obrigatório para admin_master.
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [login, password]
+      properties:
+        login:
+          type: string
+          description: Username do utilizador CRIS.
+        password:
+          type: string
+          format: password
+          description: Senha do utilizador CRIS.
+      example:
+        login: your_username
+        password: your_password
+
+    CriaCampanhaRequest:
+      type: object
+      required: [nome, clinica]
+      properties:
+        nome:
+          type: string
+          description: Nome da campanha a ser criada.
+        clinica:
+          type: string
+          description: ID da clínica (obrigatório em POST).
+      example:
+        nome: Campanha teste API
+        clinica: "1"
+
+    CadastraClienteRequest:
+      type: object
+      required: [clinica, nome, telefone, data_nascimento, canal, campanha]
+      properties:
+        clinica:
+          type: string
+          description: ID da clínica (obrigatório em POST).
+        nome:
+          type: string
+          description: Nome completo do contato.
+        telefone:
+          type: string
+          description: "Telefone no formato (DDD) XXXXX-XXXX."
+        email:
+          type: string
+          format: email
+          description: E-mail do contato.
+        data_nascimento:
+          type: string
+          description: Data de nascimento em formato SQL (YYYY-MM-DD).
+        observacao:
+          type: string
+        canal:
+          type: integer
+          description: ID do canal (listaCanal).
+        campanha:
+          type: integer
+          description: ID da campanha (listaCampanha ou criaCampanha).
+
+    AtualizaClienteRequest:
+      type: object
+      required: [clinica, id, nome, canal, campanha]
+      properties:
+        clinica:
+          type: string
+        id:
+          type: string
+          description: ID do cliente (lista_cliente).
+        nome:
+          type: string
+        data_nascimento:
+          type: string
+          description: Formato SQL (YYYY-MM-DD).
+        observacao:
+          type: string
+        canal:
+          type: integer
+        campanha:
+          type: integer
+
+    MudaStatusAgendamentoRequest:
+      type: object
+      required: [agendamento, status]
+      properties:
+        agendamento:
+          type: integer
+          description: ID do agendamento (relAgendamentos).
+        status:
+          type: integer
+          description: ID do novo status (statusAgendamento).
+      example:
+        agendamento: 3581
+        status: 2
+
+    JsonResponse:
+      description: Resposta JSON do CRIS (estrutura variável por endpoint).
+
+paths:
+  /loginApi:
+    post:
+      tags: [Autenticação]
+      summary: Login API
+      description: Gera o token de autenticação usado no header Authorization nos demais endpoints.
+      operationId: loginApi
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: Sucesso; utilizar o token no header Authorization.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /criaCampanha:
+    post:
+      tags: [Entrada — Apoio]
+      summary: Cria campanha
+      description: Regista uma nova campanha e devolve o ID para uso noutros endpoints.
+      operationId: criaCampanha
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CriaCampanhaRequest"
+      responses:
+        "200":
+          description: ID da campanha criada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /cadastraCliente:
+    post:
+      tags: [Entrada — Atração]
+      summary: Cadastra contato novo
+      description: Cria prospect/cliente no CRIS a partir de sistemas externos.
+      operationId: cadastraCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CadastraClienteRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /atualizaCadastroCliente:
+    post:
+      tags: [Entrada — Atração]
+      summary: Atualiza contato
+      description: Atualiza contato existente e regista novo canal/campanha.
+      operationId: atualizaCadastroCliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AtualizaClienteRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /mudaStatusAgendamento:
+    post:
+      tags: [Entrada — Conversão e entrega]
+      summary: Atualiza status do agendamento
+      description: Altera o status da sessão/avaliação pelo ID do agendamento.
+      operationId: mudaStatusAgendamento
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MudaStatusAgendamentoRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /lista_cliente:
+    get:
+      tags: [Saída — Atração]
+      summary: Lista prospects e clientes
+      description: Retorna dados das telas Cliente e Prospecção de Clientes.
+      operationId: listaCliente
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: nome
+          in: query
+          schema:
+            type: string
+          description: Busca por nome (correspondência aproximada).
+        - name: criado_em_de
+          in: query
+          schema:
+            type: string
+          description: Data de criação inicial (SQL).
+        - name: criado_em_ate
+          in: query
+          schema:
+            type: string
+          description: Data de criação final (SQL).
+        - name: data_nascimento_de
+          in: query
+          schema:
+            type: string
+        - name: data_nascimento_ate
+          in: query
+          schema:
+            type: string
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: indicado_por
+          in: query
+          schema:
+            type: integer
+        - name: indicado
+          in: query
+          schema:
+            type: integer
+          description: "0 = não indicado, 1 = indicado."
+        - name: inativo
+          in: query
+          schema:
+            type: integer
+          description: "0 = ativo, 1 = inativo."
+        - name: telefone
+          in: query
+          schema:
+            type: string
+          description: Formato DDDXXXXXXXXX.
+        - name: telefone_secundario
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lista paginada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /lista_venda_orcamento:
+    get:
+      tags: [Saída — Conversão]
+      summary: Lista orçamentos com venda detalhada
+      description: Equivalente ao relatório Ficha Financeira.
+      operationId: listaVendaOrcamento
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: data_de
+          in: query
+          schema:
+            type: string
+        - name: data_ate
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: integer
+          description: ID do status (lista_status_venda).
+        - name: cliente
+          in: query
+          schema:
+            type: integer
+        - name: observacoes_contratuais
+          in: query
+          schema:
+            type: string
+        - name: observacoes_venda
+          in: query
+          schema:
+            type: string
+        - name: inativo
+          in: query
+          schema:
+            type: integer
+          description: "1 = inativas, 0 = ativas, vazio = todas."
+        - name: id_servico
+          in: query
+          schema:
+            type: integer
+        - name: avaliacao_de
+          in: query
+          schema:
+            type: string
+        - name: avaliacao_ate
+          in: query
+          schema:
+            type: string
+        - name: criado_em_de
+          in: query
+          schema:
+            type: string
+        - name: criado_em_ate
+          in: query
+          schema:
+            type: string
+        - name: data_pagamento_de
+          in: query
+          schema:
+            type: string
+        - name: data_pagamento_ate
+          in: query
+          schema:
+            type: string
+        - name: modificado_em_de
+          in: query
+          schema:
+            type: string
+        - name: modificado_em_ate
+          in: query
+          schema:
+            type: string
+        - name: criado_por
+          in: query
+          schema:
+            type: integer
+        - name: modificado_por
+          in: query
+          schema:
+            type: integer
+        - name: vendedor
+          in: query
+          schema:
+            type: integer
+        - name: plano_de_conta
+          in: query
+          schema:
+            type: integer
+        - name: tipo_operacao_produto
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista paginada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /relAgendamentos:
+    get:
+      tags: [Saída — Entrega e retenção]
+      summary: Lista agendamentos
+      description: Equivalente ao relatório Agendamentos.
+      operationId: relAgendamentos
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: data_agendamento_de
+          in: query
+          schema:
+            type: string
+        - name: data_agendamento_ate
+          in: query
+          schema:
+            type: string
+        - name: tipo_agendamento
+          in: query
+          schema:
+            type: integer
+          description: ID do tipo (statusAgendamento / tipos listados no mesmo fluxo).
+        - name: status
+          in: query
+          schema:
+            type: array
+            items:
+              type: integer
+          style: form
+          explode: true
+          description: IDs dos status (statusAgendamento). Ex. 1,2,3.
+        - name: avaliacao_possui
+          in: query
+          schema:
+            type: integer
+          description: Obrigatório com tipo_agendamento = 2 (avaliacaoPossuiVendaOrcamento).
+      responses:
+        "200":
+          description: Lista paginada.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /statusAgendamento:
+    get:
+      tags: [Saída — Apoio]
+      summary: Status agendamento
+      description: Lista opções de status de agendamento com IDs.
+      operationId: statusAgendamento
+      responses:
+        "200":
+          description: IDs e descrições de status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /avaliacaoPossuiVendaOrcamento:
+    get:
+      tags: [Saída — Apoio]
+      summary: Avaliação possui venda/orçamento
+      description: Valores 0 ou 1 para filtros noutros endpoints.
+      operationId: avaliacaoPossuiVendaOrcamento
+      responses:
+        "200":
+          description: Opções do filtro PossuiVendaOrcamento.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaClinicas:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista clínicas
+      description: admin_master vê todas; licenciado vê só a sua unidade.
+      operationId: listaClinicas
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+      responses:
+        "200":
+          description: ID e nome das clínicas.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /lista_status_venda:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista status venda
+      description: Status de orçamento com IDs.
+      operationId: listaStatusVenda
+      responses:
+        "200":
+          description: IDs de status.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaServico:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista serviço
+      operationId: listaServico
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: nome
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Serviços (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaCriadoPorVenda:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista criado por venda
+      description: Profissionais para filtros de criação/modificação de orçamentos.
+      operationId: listaCriadoPorVenda
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+      responses:
+        "200":
+          description: Profissionais (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaVendedor:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista vendedor
+      operationId: listaVendedor
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+      responses:
+        "200":
+          description: Vendedores (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaPlanoDeConta:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista plano de conta
+      operationId: listaPlanoDeConta
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+      responses:
+        "200":
+          description: Planos de conta (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaTipoOperacao:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista tipo de operação
+      operationId: listaTipoOperacao
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+      responses:
+        "200":
+          description: Tipos de operação (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaCanal:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista canal
+      operationId: listaCanal
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - name: nome
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Canais (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /listaCampanha:
+    get:
+      tags: [Saída — Apoio]
+      summary: Lista campanha
+      operationId: listaCampanha
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: nome
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Campanhas (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+security:
+  - bearerAuth: []

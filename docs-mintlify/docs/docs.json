@@ -12,6 +12,15 @@
     "light": "/logo/logo.png",
     "dark": "/logo/logo.png"
   },
+  "api": {
+    "playground": {
+      "display": "interactive"
+    },
+    "examples": {
+      "languages": ["curl", "javascript", "python"],
+      "prefill": true
+    }
+  },
   "navigation": {
     "tabs": [
       {
@@ -48,6 +57,22 @@
               "bitrix24/endpoints/negocios",
               "bitrix24/campos-principais"
             ]
+          }
+        ]
+      },
+      {
+        "tab": "Referência API",
+        "groups": [
+          {
+            "group": "Começar",
+            "pages": ["api-playground-intro"]
+          },
+          {
+            "group": "CRIS REST",
+            "openapi": {
+              "source": "openapi/cris-rest.yaml",
+              "directory": "api-reference"
+            }
           }
         ]
       }

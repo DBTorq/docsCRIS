@@ -35,6 +35,50 @@ Quando um novo contato é criado diretamente no CRIS, um webhook o exporta para 
 
 ---
 
+## Consulta aniversariantes (integração IO)
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Consulta aniversariantes por data e clínica através do serviço de integração IO (host distinto do REST principal do CRIS).
+
+**Gatilho:** Por requisição de API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://io.clinicaderesultado.com.br/webhook/aniversariantes` |
+
+### Headers
+
+```http
+Content-Type: application/json
+x-api-key: {chave_fornecida_pelo_time_CRIS}
+```
+
+Substitui `{chave_fornecida_pelo_time_CRIS}` pela chave real no teu ambiente. Não incluas chaves em repositórios.
+
+### Corpo (JSON)
+
+| Campo | Tipo | Obrigatório | Descrição |
+|---|---|---|---|
+| `data` | string | Sim | Data de referência no formato `YYYY-MM-DD` (ex.: `2026-03-26`). |
+| `clinica` | string | Sim | ID da clínica (ex.: `34`). |
+
+Exemplo:
+
+```json
+{
+  "data": "2026-03-26",
+  "clinica": "34"
+}
+```
+
+Também podes experimentar esta operação no separador **Referência API** (playground), na tag **Integrações IO**.
+
+---
+
 ## Lista Prospects e Clientes
 
 <Check>

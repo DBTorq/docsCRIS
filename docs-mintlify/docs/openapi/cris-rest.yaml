@@ -4,7 +4,8 @@ info:
   version: "1.0.0"
   description: |
     API REST do CRIS (Clínica de Resultado). Use o playground para enviar pedidos reais ao ambiente configurado em `servers`.
-    Obtenha o token com **loginApi** e utilize-o no campo Bearer (header `Authorization`) nos restantes endpoints.
+    Obtenha o token com **loginApi** e utilize-o no campo Bearer (header `Authorization`) nos endpoints em `cris.clinicaderesultado.com.br`.
+    Operações na tag **Integrações IO** usam o host `io.clinicaderesultado.com.br` e autenticação **x-api-key** (não o Bearer do login).
 
 servers:
   - url: https://cris.clinicaderesultado.com.br/rest/v1
@@ -27,6 +28,8 @@ tags:
     description: Agendamentos
   - name: Saída — Apoio
     description: Listas de referência (IDs)
+  - name: Integrações IO
+    description: Webhooks em io.clinicaderesultado.com.br com header x-api-key (não utiliza loginApi / Bearer).
 
 components:
   securitySchemes:
@@ -34,6 +37,11 @@ components:
       type: http
       scheme: bearer
       description: Token retornado por `POST /loginApi` (valor sem prefixo "Bearer" se a API esperar só o token; caso contrário inclua conforme o CRIS).
+    ioWebhookApiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+      description: Chave de API fornecida pelo time CRIS para integrações IO. Não coloque valores reais em repositórios públicos.
 
   parameters:
     PaginaAtual:
@@ -153,6 +161,21 @@ components:
       example:
         agendamento: 3581
         status: 2
+
+    AniversariantesRequest:
+      type: object
+      required: [data, clinica]
+      properties:
+        data:
+          type: string
+          format: date
+          description: Data de referência (YYYY-MM-DD).
+        clinica:
+          type: string
+          description: ID da clínica (unidade).
+      example:
+        data: "2026-03-26"
+        clinica: "34"
 
     JsonResponse:
       description: Resposta JSON do CRIS (estrutura variável por endpoint).
@@ -661,6 +684,33 @@ paths:
       responses:
         "200":
           description: Campanhas (ID e nome).
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JsonResponse"
+
+  /webhook/aniversariantes:
+    servers:
+      - url: https://io.clinicaderesultado.com.br
+        description: Integração IO (webhooks)
+    post:
+      tags: [Integrações IO]
+      summary: Consulta aniversariantes
+      description: |
+        Devolve aniversariantes para a data e clínica indicadas no corpo JSON.
+        Autenticação pelo header **x-api-key** (chave fornecida pelo time CRIS). Não utiliza o token de `POST /loginApi`.
+      operationId: aniversariantes
+      security:
+        - ioWebhookApiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AniversariantesRequest"
+      responses:
+        "200":
+          description: Resposta JSON (estrutura conforme implementação IO).
           content:
             application/json:
               schema:

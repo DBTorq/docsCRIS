@@ -19,6 +19,8 @@ O Mintlify encaminha normalmente os pedidos através de um **proxy**. Se obtiver
 
 O sistema distingue **admin_master** (todas as unidades) e **licenciado_unidade** (só a clínica associada). Muitos filtros exigem `clinica` explicitamente para admin_master.
 
+Algumas operações na referência OpenAPI (tag **Integrações IO**) usam o host **io.clinicaderesultado.com.br** e o header **`x-api-key`**. O token obtido no **Login API** não se aplica a esses caminhos; preencha a chave no esquema de autenticação indicado na operação.
+
 ## Onde está a documentação narrativa
 
 Os guias com contexto de negócio, exemplos e avisos continuam no separador **Documentação**, nas secções CRIS — Entrada e CRIS — Saída. Esta referência serve para **experimentar** os mesmos caminhos REST descritos ali.

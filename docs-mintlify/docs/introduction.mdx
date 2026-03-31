@@ -1,0 +1,45 @@
+---
+title: "Introdução"
+description: "Documentação completa das APIs do CRIS e do Bitrix24. Atualizado em 19/01/2026."
+icon: "book-open"
+---
+
+Este documento detalha todos os endpoints que o sistema **CRIS** e o **Bitrix24** possuem, com seus respectivos dados de entrada e de saída.
+
+## Visão Geral
+
+A documentação está organizada em três grandes blocos:
+
+<CardGroup cols={3}>
+  <Card title="CRIS — Saída" icon="arrow-up-from-bracket" href="/cris/saida/atracao">
+    Endpoints que **exportam** dados do CRIS para sistemas externos, como CRMs e automações.
+  </Card>
+  <Card title="CRIS — Entrada" icon="arrow-down-to-bracket" href="/cris/entrada/atracao">
+    Endpoints que **importam** dados de sistemas externos para dentro do CRIS.
+  </Card>
+  <Card title="Bitrix24 CRM" icon="building" href="/bitrix24/introducao">
+    Endpoints recomendados pelo time CR Sistemas para operar o CRM Bitrix24 customizado.
+  </Card>
+</CardGroup>
+
+## Autenticação CRIS
+
+A maioria dos endpoints do CRIS exige um token de autenticação gerado pelo endpoint [`loginApi`](/cris/entrada/apoio#login-api).
+
+```http
+Authorization: {token_gerado_pelo_loginApi}
+Content-Type: application/json
+```
+
+<Note>
+  O token deve ser renovado periodicamente. Consulte o endpoint [loginApi](/cris/entrada/apoio#login-api) para mais detalhes.
+</Note>
+
+## Status dos Endpoints
+
+Cada endpoint possui um indicador de status:
+
+| Status | Descrição |
+|---|---|
+| ✅ **Disponível** | Endpoint funcional e pronto para uso |
+| 🔜 **Melhoria futura** | Indisponível no momento, previsto para versões futuras |

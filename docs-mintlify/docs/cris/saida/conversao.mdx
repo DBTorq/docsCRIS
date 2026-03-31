@@ -1,0 +1,256 @@
+---
+title: "Conversão — Saída"
+description: "Endpoints que exportam dados de avaliações, orçamentos e agendamentos do CRIS."
+icon: "handshake"
+---
+
+## Nova Avaliação Agendada para o Contato
+
+<Warning>
+  **Status: Melhoria futura — indisponível no momento**
+</Warning>
+
+Quando uma nova avaliação é agendada diretamente no CRIS, um webhook a exporta para o CRM.
+
+**Gatilho:** Novo agendamento criado na tela **Agenda**.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| Saída de dados | Body |
+| Formato | JSON |
+| Autenticação | Nenhuma |
+| Link do webhook | Informar ao time CR |
+
+### Campos Retornados
+
+- Contato: ID
+- Contato: Criado em
+- Contato: Criado por
+- Contato: Nome
+- Contato: Telefone
+- Contato: Email
+- Contato: Canal — mais recente
+- Contato: Campanha/Ação — mais recente
+- Contato: Unidade
+- Agendamento: ID
+- Agendamento: Tipo = Avaliação
+- Agendamento: Data e hora
+
+<Info>
+  Se o CRM trabalha com múltiplos negócios, é necessário criar uma automação no CRM que analisa a **Data/hora**, **Canal** e **Campanha/Ação** correspondentes àquela avaliação.
+</Info>
+
+---
+
+## Novo Orçamento Lançado para o Contato
+
+<Warning>
+  **Status: Melhoria futura — indisponível no momento**
+</Warning>
+
+Quando um novo orçamento é lançado diretamente no CRIS, um webhook o exporta para o CRM.
+
+**Gatilho:** Novo orçamento criado na tela **Venda/Orçamento**.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| Saída de dados | Body |
+| Formato | JSON |
+| Autenticação | Nenhuma |
+| Link do webhook | Informar ao time CR |
+
+### Campos Retornados
+
+- Orçamento: ID
+- Orçamento: Data da venda
+- Orçamento: Cliente ID
+- Orçamento: Cliente Nome
+- Orçamento: Cliente Telefone
+- Orçamento: Avaliação Realizada
+- Orçamento: Origem da Venda — Canal
+- Orçamento: Origem da Venda — Campanha/Ação
+- Orçamento: Produto — Categoria
+- Orçamento: Procedimentos — Categoria
+- Orçamento: Valor total
+- Orçamento: Unidade
+
+<Info>
+  Se o CRM trabalha com múltiplos negócios, é necessário criar uma automação no CRM que analisa a **Avaliação Realizada**, **Canal** e **Campanha/Ação** correspondentes àquela venda.
+</Info>
+
+---
+
+## Lista Orçamentos com Venda Detalhada
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Equivalente ao relatório **"Ficha Financeira"** do CRIS, extraído via API com os mesmos campos de filtro.
+
+**Gatilho:** Por requisição de API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/lista_venda_orcamento` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Query Params
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+
+  <Note>Recomenda-se usar um número baixo para não sobrecarregar a API.</Note>
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Preenchido automaticamente para usuários de clínica. **Obrigatório para admin_master.**
+</ParamField>
+
+<ParamField query="data_de" type="string">
+  Data inicial em formato SQL. Ex: `2025-01-07`
+</ParamField>
+
+<ParamField query="data_ate" type="string">
+  Data final em formato SQL. Ex: `2025-01-07`
+</ParamField>
+
+<ParamField query="status" type="integer">
+  ID do status. Consulte o endpoint [`lista_status_venda`](/cris/saida/apoio#lista-status-venda).
+</ParamField>
+
+<ParamField query="cliente" type="integer">
+  ID do cliente. Consulte o endpoint [`lista_cliente`](/cris/saida/atracao#lista-prospects-e-clientes).
+</ParamField>
+
+<ParamField query="observacoes_contratuais" type="string">
+  Busca por correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+<ParamField query="observacoes_venda" type="string">
+  Busca por correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+<ParamField query="inativo" type="integer">
+  `1` = retorna vendas inativas | `0` = retorna vendas ativas | vazio = retorna todas
+</ParamField>
+
+<ParamField query="id_servico" type="integer">
+  ID do serviço. Consulte o endpoint [`listaServico`](/cris/saida/apoio#lista-servico).
+</ParamField>
+
+<ParamField query="avaliacao_de" type="string">
+  Data de avaliação inicial em formato SQL. Ex: `2025-05-01`
+</ParamField>
+
+<ParamField query="avaliacao_ate" type="string">
+  Data de avaliação final em formato SQL. Ex: `2025-06-23`
+</ParamField>
+
+<ParamField query="criado_em_de" type="string">
+  Data de criação inicial em formato SQL. Ex: `2025-01-07`
+</ParamField>
+
+<ParamField query="criado_em_ate" type="string">
+  Data de criação final em formato SQL. Ex: `2025-01-07`
+</ParamField>
+
+<ParamField query="data_pagamento_de" type="string">
+  Data de pagamento inicial em formato SQL. Ex: `2025-06-23`
+</ParamField>
+
+<ParamField query="data_pagamento_ate" type="string">
+  Data de pagamento final em formato SQL. Ex: `2025-06-23`
+</ParamField>
+
+<ParamField query="modificado_em_de" type="string">
+  Data de modificação inicial em formato SQL. Ex: `2025-06-23`
+</ParamField>
+
+<ParamField query="modificado_em_ate" type="string">
+  Data de modificação final em formato SQL. Ex: `2025-06-23`
+</ParamField>
+
+<ParamField query="criado_por" type="integer">
+  ID do usuário criador. Consulte o endpoint [`listaCriadoPorVenda`](/cris/saida/apoio#lista-criado-por-venda).
+</ParamField>
+
+<ParamField query="modificado_por" type="integer">
+  ID do último usuário que modificou. Consulte o endpoint [`listaCriadoPorVenda`](/cris/saida/apoio#lista-criado-por-venda).
+</ParamField>
+
+<ParamField query="vendedor" type="integer">
+  ID do vendedor. Consulte o endpoint [`listaVendedor`](/cris/saida/apoio#lista-vendedor).
+</ParamField>
+
+<ParamField query="plano_de_conta" type="integer">
+  ID do plano de conta. Consulte o endpoint [`listaPlanoDeConta`](/cris/saida/apoio#lista-plano-de-conta).
+</ParamField>
+
+<ParamField query="tipo_operacao_produto" type="integer">
+  ID do tipo de operação. Consulte o endpoint [`listaTipoOperacao`](/cris/saida/apoio#lista-tipo-operacao).
+</ParamField>
+
+### Campos Retornados
+
+- Orçamento: Código
+- Orçamento: Criado Por / Criado Em
+- Orçamento: Data / Status
+- Orçamento: Plano de Conta / Vendedor
+- Orçamento: Cliente / Avaliação Realizada
+- Orçamento: Tipo de Operação sobre produtos
+- Orçamento: Conta Bancária
+- Orçamento: Observações Contratuais / da Venda
+- Orçamento: Produtos / Procedimentos
+- Orçamento: Tipo de Orçamento
+- Orçamento: Valor / Valor Original da venda
+- Orçamento: Telefone / Contrato
+- Orçamento: Campanha/Ação / Canal
+- Orçamento: Cortesia / Empresa / Venda Avulsa
+- Orçamento: Tipo pagamento / Unidade
+
+<Note>
+  O endpoint respeita o nível de acesso do usuário — mostrando entidades apenas da respectiva unidade.
+</Note>
+
+---
+
+## Orçamento Atualizado para o Contato
+
+<Warning>
+  **Status: Melhoria futura — indisponível no momento**
+</Warning>
+
+Quando um orçamento é atualizado diretamente no CRIS, um webhook o exporta para o CRM.
+
+**Gatilho:** Orçamento atualizado na tela **Ficha Financeira**.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| Saída de dados | Body |
+| Formato | JSON |
+| Autenticação | Nenhuma |
+| Link do webhook | Informar ao time CR |
+
+### Campos Retornados
+
+- Orçamento: ID
+- Orçamento: Status (`Aprovado` / `Cancelado` / `Suspenso`)
+
+<Info>
+  Se o CRM trabalha com múltiplos negócios, é necessário criar uma automação no CRM que analisa o **ID** correspondente àquela venda.
+</Info>

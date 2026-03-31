@@ -1,0 +1,356 @@
+---
+title: "Apoio — Saída"
+description: "Endpoints auxiliares que retornam listas de IDs e valores para uso em filtros e parâmetros de outros endpoints do CRIS."
+icon: "wrench"
+---
+
+Os endpoints de Apoio retornam listas de referência (IDs e nomes) para serem usados como filtros ou parâmetros nos endpoints principais.
+
+<Note>
+  Todos os endpoints de Apoio exigem autenticação via token. Consulte o endpoint [loginApi](/cris/entrada/apoio#login-api).
+</Note>
+
+---
+
+## Status Agendamento
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista as opções de **Status de Agendamento** com seus respectivos IDs.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/statusAgendamento` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+**Campos retornados:** Agendamento: IDs do Status
+
+---
+
+## Avaliação Possui Venda/Orçamento
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista as opções do campo `PossuiVendaOrcamento` (`0` ou `1`) para uso em filtros de outros endpoints.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/avaliacaoPossuiVendaOrcamento` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+**Campos retornados:** Agendamento: Filtro — PossuiVendaOrcamento
+
+---
+
+## Lista Clínicas
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista todas as clínicas cadastradas no CRIS com seus respectivos IDs.
+
+- **admin_master:** vê a lista completa
+- **Usuário licenciado:** vê apenas o ID da sua própria clínica
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaClinicas` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+**Campos retornados:** Clínica: ID | Clínica: Nome
+
+---
+
+## Lista Status Venda
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista as opções de status do **Orçamento** com seus respectivos IDs.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/lista_status_venda` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+**Campos retornados:** Orçamento: ID do Status
+
+---
+
+## Lista Serviço
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os serviços cadastrados no CRIS.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaServico` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+<ParamField query="nome" type="string">
+  Busca por correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+**Campos retornados:** Serviço: ID | Serviço: Nome
+
+---
+
+## Lista Criado Por Venda
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os profissionais cadastrados no CRIS — para uso em filtros de criação/modificação de orçamentos.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaCriadoPorVenda` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+**Campos retornados:** Profissional: ID | Profissional: Nome
+
+---
+
+## Lista Vendedor
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os profissionais cadastrados no CRIS que podem efetuar vendas.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaVendedor` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+**Campos retornados:** Profissional: ID | Profissional: Nome
+
+---
+
+## Lista Plano de Conta
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os planos de conta cadastrados no CRIS.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaPlanoDeConta` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+**Campos retornados:** Plano de Conta: ID | Plano de Conta: Nome
+
+---
+
+## Lista Tipo de Operação
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os tipos de operação cadastrados no CRIS.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaTipoOperacao` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+**Campos retornados:** Tipo de Operação: ID | Tipo de Operação: Nome
+
+---
+
+## Lista Canal
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os canais cadastrados no CRIS.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaCanal` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="nome" type="string">
+  Busca por correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+**Campos retornados:** Canal: ID | Canal: Nome
+
+---
+
+## Lista Campanha
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista as campanhas cadastradas no CRIS.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/listaCampanha` |
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Obrigatório para admin_master.
+</ParamField>
+
+<ParamField query="nome" type="string">
+  Busca por correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+**Campos retornados:** Campanha: ID | Campanha: Nome

@@ -1,0 +1,123 @@
+---
+title: "Conversão, Entrega e Retenção — Saída"
+description: "Endpoints que exportam dados de agendamentos de tratamento e saldo de sessões do CRIS."
+icon: "calendar-check"
+---
+
+## Lista Agendamentos
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Equivalente ao relatório **"Agendamentos"** do CRIS, extraído via API com os mesmos campos de filtro.
+
+**Gatilho:** Por requisição de API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/relAgendamentos` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Query Params
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+
+  <Note>Recomenda-se usar um número baixo para não sobrecarregar a API.</Note>
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Preenchido automaticamente para usuários de clínica. **Obrigatório para admin_master.**
+</ParamField>
+
+<ParamField query="data_agendamento_de" type="string">
+  Data inicial do agendamento em formato SQL. Ex: `2025-01-01`
+</ParamField>
+
+<ParamField query="data_agendamento_ate" type="string">
+  Data final do agendamento em formato SQL. Ex: `2025-06-18`
+</ParamField>
+
+<ParamField query="tipo_agendamento" type="integer">
+  ID do tipo de agendamento. Consulte o endpoint [`tipoAgendamento`](/cris/saida/apoio#status-agendamento).
+
+  <Tip>Para listar apenas avaliações, use o tipo correspondente à **Avaliação**.</Tip>
+</ParamField>
+
+<ParamField query="status" type="array">
+  Array com IDs dos status desejados. Ex: `[1,2,3,4,5]`
+
+  Consulte o endpoint [`statusAgendamento`](/cris/saida/apoio#status-agendamento).
+</ParamField>
+
+<ParamField query="avaliacao_possui" type="integer">
+  ID do campo `avaliacaoPossuiVendaOrcamento`. Obrigatório usar junto com `tipo_agendamento = 2`.
+
+  Consulte o endpoint [`avaliacaoPossuiVendaOrcamento`](/cris/saida/apoio#avaliacao-possui-venda-orcamento).
+</ParamField>
+
+### Campos Retornados
+
+- Agendamento: ID
+- Agendamento: Criado em
+- Agendamento: Data Agendamento
+- Agendamento: Cliente ID
+- Agendamento: Cliente — Nome
+- Agendamento: Cliente — Telefone
+- Agendamento: Tipo
+- Agendamento: Serviço
+- Agendamento: Profissional
+- Agendamento: Sala
+- Agendamento: Status
+
+---
+
+## Lista Saldo de Tratamento
+
+<Warning>
+  **Status: Melhoria futura — indisponível no momento**
+</Warning>
+
+Equivalente ao relatório **"Relatório de Saldo de Tratamentos"** do CRIS, extraído via API com os mesmos campos de filtro.
+
+**Gatilho:** Por requisição de API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET via Postman` |
+
+### Filtros Disponíveis
+
+- Orçamento: Unidade (ex: `OligoFlora Indaiatuba` — string fixo)
+- Orçamento: Data da Venda
+- Orçamento: Cliente
+- Orçamento: Tem Saldo
+- Orçamento: Categoria
+
+### Campos Retornados
+
+- Orçamento: Cliente / Telefone
+- Orçamento: Data / Categoria / Serviço
+- Orçamento: Quantidade Contratada
+- Orçamento: Quantidade Utilizada
+- Orçamento: Quantidade Agendada
+- Orçamento: Quantidade Cancelada
+- Orçamento: Quantidade Transferida
+- Orçamento: Saldo
+- Orçamento: Unidade
+
+<Note>
+  O endpoint respeita o nível de acesso do usuário — mostrando entidades apenas da respectiva unidade.
+</Note>

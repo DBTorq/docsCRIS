@@ -1,0 +1,72 @@
+---
+title: "Conversão e Entrega — Entrada"
+description: "Endpoint para atualizar o status de agendamentos de avaliação e tratamento no CRIS."
+icon: "calendar-pen"
+---
+
+## Atualiza Status do Agendamento do Contato
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Com base no ID do Agendamento, altera o status da sessão/avaliação.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/mudaStatusAgendamento` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Campos
+
+**Agendamento: ID** | **Agendamento: Status**
+
+Os status disponíveis são:
+
+| Status |
+|---|
+| Agendado |
+| Confirmado |
+| Presente |
+| Executado |
+| Desmarcado |
+| Faltou |
+| Cancelado |
+| Bloqueio |
+
+### Body (JSON)
+
+<ParamField body="agendamento" type="integer" required>
+  ID do agendamento. Consulte o endpoint [`relAgendamentos`](/cris/saida/entrega-retencao#lista-agendamentos).
+</ParamField>
+
+<ParamField body="status" type="integer" required>
+  ID do novo status. Consulte o endpoint [`statusAgendamento`](/cris/saida/apoio#status-agendamento).
+</ParamField>
+
+### Exemplo de Requisição
+
+```json
+{
+  "agendamento": 3581,
+  "status": 2
+}
+```
+
+<Warning>
+  **Regras de agendamento:** as mesmas regras que existem na Agenda "manual" do CRIS devem ser respeitadas ao atualizar status via API.
+
+  Regras de automação vinculadas ao status devem ser criadas **dentro do próprio CRM**. Exemplos:
+
+  - Se Status = `Desmarcado` → mover negócio para fase **Repique** no CRM.
+  - Se Status = `Executado` → mover negócio para fase **Procedimento feito** e enviar mensagem de satisfação.
+</Warning>

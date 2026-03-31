@@ -1,0 +1,92 @@
+---
+title: "Nomenclaturas Importantes"
+description: "Entidades e conceitos essenciais para entender a regra de negócio e a lógica dos sistemas CRIS e Bitrix24."
+icon: "book-bookmark"
+---
+
+As definições abaixo são fundamentais para interpretar corretamente os dados retornados e enviados pelas APIs.
+
+## Jornada de Compra do Cliente
+
+O CRIS organiza suas regras de negócio com base no **Service Design Thinking**, colocando a experiência do usuário no centro. As etapas da jornada são:
+
+<Steps>
+  <Step title="Atração">
+    Etapa 1 do relacionamento do **prospect** com a marca — desde o primeiro comentário na rede social, por exemplo, até o agendamento da avaliação.
+  </Step>
+  <Step title="Conversão">
+    Etapa 2 do relacionamento do **lead** com a marca — da presença na avaliação até a compra do tratamento.
+  </Step>
+  <Step title="Entrega">
+    Etapa 3 do relacionamento do **cliente** com a marca — da primeira sessão até a conclusão do tratamento.
+  </Step>
+  <Step title="Retenção">
+    Etapa 4 do relacionamento do **cliente** com a marca — atenção para a satisfação, processos comerciais para recompra, aumento de LTV e geração de indicações.
+  </Step>
+</Steps>
+
+---
+
+## Entidades do Sistema
+
+### Contato
+
+Entidade que representa uma pessoa com CPF, nome, telefone e e-mail únicos.
+
+- No CRIS, o contato é chamado de **Prospect** enquanto não possui orçamento aprovado.
+- Após a conclusão da venda, passa a ser chamado de **Cliente**.
+
+<Info>
+  **Atenção à lógica do CRM:**
+  - **Contato único + negócio único:** independente de quantas compras o contato gerar, apenas um "card" é criado no CRM.
+  - **Contato único + negócios múltiplos:** cada interesse de compra ou orçamento gera seu próprio "card" no CRM. **Este é o caso do Bitrix24.**
+
+  Essa distinção impacta diretamente a forma como você manipula os dados obtidos via API.
+</Info>
+
+---
+
+### Negócio
+
+Entidade que representa a **possível compra** do contato. Pode originar-se de:
+
+- Um cadastro feito em um site
+- Uma mensagem enviada após receber uma indicação
+- Criação manual pela equipe
+- Criação automática via integrações (formulários de sites/landing pages, Meta Ads Forms, etc.)
+
+---
+
+### Avaliação
+
+Entidade que representa a sessão/agendamento exclusivamente dedicado à **tentativa de venda consultiva** — pode ser online ou presencial.
+
+<Warning>
+  Dentro do CRIS, a Avaliação é um campo importante que impacta diretamente no lançamento dos orçamentos e no módulo **Planejamento Comercial da Unidade** (KPIs automatizados, estudo diário e funil).
+</Warning>
+
+---
+
+### Orçamento
+
+Entidade que representa o **interesse de compra** do contato. Contém dados como número de sessões, itens de produtos, valores, descontos e forma de pagamento.
+
+| Status | Descrição |
+|---|---|
+| **Pendente** | Criado a partir do momento em que a negociação com o contato se inicia |
+| **Aprovado** | Quando o cliente faz o pagamento — venda concluída |
+| **Cancelado** | Cliente compra e cancela por algum motivo |
+| **Suspenso** | Contato não chega a fechar compra e desiste — orçamento "arquivado" |
+| **Inativo** | Orçamento excluído por motivo de erro de lançamento |
+
+---
+
+### Agendamento
+
+Entidade que representa a **sessão do tratamento**, na qual é reservado um horário na agenda de execução de procedimentos da clínica.
+
+---
+
+### Apoio
+
+Categoria de endpoints secundários que servem para **retornar dados** requisitados nos endpoints principais (ex: IDs de clínicas, canais, campanhas, status, etc.).

@@ -1,0 +1,186 @@
+---
+title: "Atração — Entrada"
+description: "Endpoints para cadastrar e atualizar contatos no CRIS a partir de sistemas externos."
+icon: "user-pen"
+---
+
+## Cadastra Contato Novo
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Quando um novo contato é criado diretamente no CRM, um webhook o importa para o CRIS de modo que não haja divergências na base.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/cadastraCliente` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Campos Necessários
+
+- Contato: ID
+- Contato: Criado em
+- Contato: Nome
+- Contato: Telefone
+- Contato: Email
+- Contato: Canal do CRM
+- Contato: Campanha/Ação do CRM
+- Contato: Data de nascimento
+- Contato: Observação
+- Contato: Unidade
+
+### Body (JSON)
+
+<ParamField body="clinica" type="string" required>
+  ID da clínica. Diferente dos endpoints GET, aqui **sempre** é obrigatório passar.
+</ParamField>
+
+<ParamField body="nome" type="string" required>
+  Nome completo do contato.
+</ParamField>
+
+<ParamField body="telefone" type="string" required>
+  Telefone no formato `(DDD) XXXXX-XXXX`. Ex: `(16) 99264-0197`
+</ParamField>
+
+<ParamField body="email" type="string">
+  Endereço de e-mail do contato.
+</ParamField>
+
+<ParamField body="data_nascimento" type="string" required>
+  Data de nascimento em formato SQL. Ex: `1990-01-01`
+</ParamField>
+
+<ParamField body="observacao" type="string">
+  Observações livres sobre o contato.
+</ParamField>
+
+<ParamField body="canal" type="integer" required>
+  ID do canal. Consulte o endpoint [`listaCanal`](/cris/saida/apoio#lista-canal).
+</ParamField>
+
+<ParamField body="campanha" type="integer" required>
+  ID da campanha. Consulte os endpoints [`listaCampanha`](/cris/saida/apoio#lista-campanha) ou [`criaCampanha`](/cris/entrada/apoio#cria-campanha).
+</ParamField>
+
+### Exemplo de Requisição
+
+```json
+{
+  "nome": "Teste api",
+  "telefone": "(16) 99264-0197",
+  "email": "lucas2@teste.com",
+  "data_nascimento": "1990-01-01",
+  "observacao": "Observações aqui",
+  "clinica": "1",
+  "canal": "1",
+  "campanha": "400"
+}
+```
+
+<Warning>
+  **Antes de cadastrar**, é obrigatório consultar a base da unidade via endpoint [Lista Prospects e Clientes](/cris/saida/atracao#lista-prospects-e-clientes):
+
+  - Se o contato **não existe** → use este endpoint para criar o novo Prospect.
+  - Se o contato **já existe** → use o endpoint [Atualiza Contato](#atualiza-contato) para evitar duplicações e conflitos de dados.
+</Warning>
+
+---
+
+## Atualiza Contato
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Após consultar o endpoint [Lista Prospects e Clientes](/cris/saida/atracao#lista-prospects-e-clientes) e localizar um contato existente, este endpoint atualiza seus campos e registra um novo canal/campanha com base em seu ID.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/atualizaCadastroCliente` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Campos
+
+**Apenas leitura (informados, não editáveis):**
+- Contato: Telefone
+- Contato: Email
+- Contato: ID
+- Contato: Unidade
+
+**Obrigatórios (atualizados):**
+- Negócio: Criado em
+- Negócio: Canal do CRM
+- Negócio: Campanha/Ação do CRM
+
+**Opcionais (atualizados):**
+- Contato: Nome
+- Contato: Data de nascimento
+- Contato: Observação
+
+### Body (JSON)
+
+<ParamField body="clinica" type="string" required>
+  ID da clínica. Diferente dos endpoints GET, aqui **sempre** é obrigatório passar.
+</ParamField>
+
+<ParamField body="id" type="string" required>
+  ID do cliente. Consulte o endpoint [`lista_cliente`](/cris/saida/atracao#lista-prospects-e-clientes).
+</ParamField>
+
+<ParamField body="nome" type="string" required>
+  Nome do contato.
+</ParamField>
+
+<ParamField body="data_nascimento" type="string">
+  Data de nascimento em formato SQL. Ex: `1996-01-01`
+</ParamField>
+
+<ParamField body="observacao" type="string">
+  Observações livres.
+</ParamField>
+
+<ParamField body="canal" type="integer" required>
+  ID do canal. Consulte o endpoint [`listaCanal`](/cris/saida/apoio#lista-canal).
+</ParamField>
+
+<ParamField body="campanha" type="integer" required>
+  ID da campanha. Consulte os endpoints [`listaCampanha`](/cris/saida/apoio#lista-campanha) ou [`criaCampanha`](/cris/entrada/apoio#cria-campanha).
+</ParamField>
+
+### Exemplo de Requisição
+
+```json
+{
+  "nome": "Teste api",
+  "data_nascimento": "1996-01-01",
+  "observacao": "Observações aqui at",
+  "clinica": "1",
+  "canal": "1",
+  "campanha": "214",
+  "id": "5252"
+}
+```
+
+<Info>
+  Os campos de origem do Negócio são registrados no contato dentro do CRIS como novo canal/campanha.
+</Info>

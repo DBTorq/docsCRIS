@@ -1,55 +1,40 @@
-# Mintlify Starter Kit
+# CRIS & Bitrix24 API — documentação (Mintlify)
 
-Use the starter kit to get your docs deployed and ready to customize.
+Documentação das APIs do **CRIS** e integração com **Bitrix24**, publicada com [Mintlify](https://mintlify.com).
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+## Estrutura do repositório
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+| Caminho | Descrição |
+|---------|-----------|
+| [`docs-mintlify/docs`](docs-mintlify/docs) | **Raiz do site Mintlify** — `docs.json`, páginas MDX, `logo/`, `favicon.svg` |
+| [`CRIS e Bitrix24 API _ Documentação.docx.md`](CRIS%20e%20Bitrix24%20API%20_%20Documenta%C3%A7%C3%A3o.docx.md) | Fonte em Markdown (export) para referência |
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+## Desenvolvimento local
 
-## AI-assisted writing
-
-Set up your AI coding tool to work with Mintlify:
+Instale o [Mintlify CLI](https://www.npmjs.com/package/mint) e execute a partir da pasta do projeto:
 
 ```bash
-npx skills add https://mintlify.com/docs
-```
-
-This command installs Mintlify's documentation skill for your configured AI tools like Claude Code, Cursor, Windsurf, and others. The skill includes component reference, writing standards, and workflow guidance.
-
-See the [AI tools guides](/ai-tools) for tool-specific setup.
-
-## Development
-
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
-
-```
 npm i -g mint
-```
-
-Run the following command at the root of your documentation, where your `docs.json` is located:
-
-```
+cd docs-mintlify/docs
 mint dev
 ```
 
-View your local preview at `http://localhost:3000`.
+Abra `http://localhost:3000`.
 
-## Publishing changes
+Verificar links internos:
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+```bash
+cd docs-mintlify/docs
+mint broken-links
+```
 
-## Need help?
+## Publicação (Mintlify Cloud)
 
-### Troubleshooting
+Conecte o repositório no [dashboard](https://dashboard.mintlify.com) e defina a **subpasta** do projeto como `docs-mintlify/docs` para que o deploy use apenas esta documentação.
 
-- If your dev environment isn't running: Run `mint update` to ensure you have the most recent version of the CLI.
-- If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
+## Recursos
 
-### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
+- [Documentação Mintlify](https://mintlify.com/docs)
+- Skill para assistentes: `npx skills add https://mintlify.com/docs`
+
+Para contribuir, veja [CONTRIBUTING.md](CONTRIBUTING.md).

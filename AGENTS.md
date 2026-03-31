@@ -6,11 +6,32 @@
 
 ## About this project
 
-- This is a documentation site built on [Mintlify](https://mintlify.com)
-- Pages are MDX files with YAML frontmatter
-- Configuration lives in `docs.json`
-- Run `mint dev` to preview locally
-- Run `mint broken-links` to check links
+- This repository holds **CRIS & Bitrix24 API** documentation built on [Mintlify](https://mintlify.com).
+- **Mintlify project root** (where `docs.json` and MDX pages live): [`docs-mintlify/docs`](docs-mintlify/docs)
+- Pages are MDX files with YAML frontmatter.
+- Configuration: [`docs-mintlify/docs/docs.json`](docs-mintlify/docs/docs.json)
+
+## Local preview and checks
+
+From the Mintlify project root:
+
+```bash
+cd docs-mintlify/docs
+mint dev
+```
+
+Preview at `http://localhost:3000`.
+
+Check links:
+
+```bash
+cd docs-mintlify/docs
+mint broken-links
+```
+
+## Deploy (Mintlify Cloud)
+
+In the [Mintlify dashboard](https://dashboard.mintlify.com), set the Git repository **documentation subdirectory** to `docs-mintlify/docs` so deploys use this project and not the repository root.
 
 ## Terminology
 

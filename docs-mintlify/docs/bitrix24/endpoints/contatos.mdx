@@ -1,0 +1,155 @@
+---
+title: "Contatos"
+description: "Endpoints para criar, listar, obter e editar contatos no Bitrix24."
+icon: "users"
+---
+
+## Cria Contato e Vincula a um Negócio na Pipeline Unidade
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Cria um novo contato e vincula um novo negócio a ele imediatamente na pipeline **Unidade**, na fase **Nova oportunidade**.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint URL | `https://auto.grupoboto.com/webhook/560db699-9177-4307-abea-825c4c62ead4` |
+| Headers | nenhum |
+
+<Info>
+  Este endpoint foi desenvolvido pela CR Sistemas e **verifica se o contato já existe** antes de criar um novo, evitando duplicidades.
+</Info>
+
+### Query Params
+
+<ParamField query="Primeiro Nome" type="string" required>
+  Primeiro nome do contato.
+</ParamField>
+
+<ParamField query="Sobrenome" type="string" required>
+  Sobrenome do contato.
+</ParamField>
+
+<ParamField query="Data hora de criação" type="string" required>
+  Data e hora no padrão `DD/MM/AAAA hh:mm:ss`. Ex: `29/07/2025 14:30:00`
+</ParamField>
+
+<ParamField query="Campaign ID" type="string" required>
+  ID da campanha de origem.
+</ParamField>
+
+<ParamField query="UTM Source" type="string" required>
+  Valor fixo — deve ser `WhatsApp`, `Facebook` ou `Instagram`.
+</ParamField>
+
+<ParamField query="UTM Medium" type="string" required>
+  Medium da campanha.
+</ParamField>
+
+<ParamField query="UTM Campaign" type="string" required>
+  Nome da campanha.
+</ParamField>
+
+<ParamField query="UTM Content" type="string" required>
+  Conteúdo do anúncio.
+</ParamField>
+
+<ParamField query="Telefone" type="string" required>
+  Telefone no padrão `+55DDDnumero`. Ex: `+5517981212118`
+</ParamField>
+
+<ParamField query="Email" type="string" required>
+  Endereço de e-mail do contato.
+</ParamField>
+
+<ParamField query="Unidade" type="string" required>
+  String fixa conforme o padrão definido na [lista de campos principais](/bitrix24/campos-principais#negocio-unidade-definitiva).
+
+  Ex: `SP São José do Rio Preto`
+</ParamField>
+
+---
+
+## Lista Contatos
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os contatos para os filtros e campos selecionados na requisição. Retorna apenas contatos que a unidade tem permissão para visualizar.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.contact.list` |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/contacts/crm-contact-list.html) |
+
+### Query Params
+
+<ParamField query="FIELDS[{id_do_campo}]" type="string">
+  Filtros e seleção de campos desejados.
+
+  Consulte a [lista de campos principais](/bitrix24/campos-principais) para os IDs disponíveis.
+</ParamField>
+
+---
+
+## Obtém Contato
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Retorna todos os campos que o contato possui — nativos e personalizados.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.contact.get` |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/contacts/crm-contact-get.html) |
+
+### Query Params
+
+<ParamField query="ID" type="integer" required>
+  ID do contato. Ex: `ID = {id_do_contato}`
+</ParamField>
+
+---
+
+## Edita Contato
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Edita os campos do contato que forem passados como parâmetro, **sem alterar os demais campos** não citados.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.contact.update` |
+| Observação | Raramente usado |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/contacts/crm-contact-update.html) |
+
+### Query Params
+
+<ParamField query="ID" type="integer" required>
+  ID do contato. Ex: `ID = {id_do_contato}`
+</ParamField>
+
+<ParamField query="FIELDS[{id_do_campo}]" type="string" required>
+  Campo(s) a serem editados. Consulte a [lista de campos principais](/bitrix24/campos-principais).
+</ParamField>

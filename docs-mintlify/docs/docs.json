@@ -1,0 +1,68 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "CRIS & Bitrix24 API",
+  "colors": {
+    "primary": "#0D9373",
+    "light": "#07C983",
+    "dark": "#0D9373"
+  },
+  "favicon": "/favicon.svg",
+  "logo": {
+    "light": "/logo/logo.png",
+    "dark": "/logo/logo.png"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentação",
+        "groups": [
+          {
+            "group": "Introdução",
+            "pages": ["introduction", "nomenclaturas"]
+          },
+          {
+            "group": "CRIS — Endpoints de Saída",
+            "pages": [
+              "cris/saida/atracao",
+              "cris/saida/conversao",
+              "cris/saida/entrega-retencao",
+              "cris/saida/apoio"
+            ]
+          },
+          {
+            "group": "CRIS — Endpoints de Entrada",
+            "pages": [
+              "cris/entrada/atracao",
+              "cris/entrada/conversao-entrega",
+              "cris/entrada/retencao",
+              "cris/entrada/apoio"
+            ]
+          },
+          {
+            "group": "Bitrix24 CRM",
+            "pages": [
+              "bitrix24/introducao",
+              "bitrix24/endpoints/token",
+              "bitrix24/endpoints/contatos",
+              "bitrix24/endpoints/negocios",
+              "bitrix24/campos-principais"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
+  }
+}

@@ -1,0 +1,110 @@
+---
+title: "Apoio — Entrada"
+description: "Endpoints auxiliares de autenticação e criação de recursos no CRIS."
+icon: "key"
+---
+
+## Login API
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Com base no login e senha do usuário, gera o **token de autenticação** que será utilizado em todos os demais endpoints como camada de segurança.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/loginApi` |
+
+### Headers
+
+```http
+Content-Type: application/json
+```
+
+### Body (JSON)
+
+<ParamField body="login" type="string" required>
+  Username do usuário utilizado para fazer login no CRIS.
+</ParamField>
+
+<ParamField body="password" type="string" required>
+  Senha do usuário utilizada para fazer login no CRIS.
+</ParamField>
+
+### Exemplo de Requisição
+
+```json
+{
+  "login": "admin",
+  "password": "S3nh4#2025"
+}
+```
+
+### Resposta
+
+O endpoint retorna o token de autenticação a ser usado no header `Authorization` de todos os outros endpoints:
+
+```http
+Authorization: {token_retornado}
+```
+
+<Info>
+  O sistema identifica automaticamente se o usuário é **admin_master** ou **licenciado_unidade**, restringindo o nível de acesso:
+
+  - **admin_master:** acesso a todos os dados de todas as unidades.
+  - **licenciado_unidade:** acesso apenas aos dados da clínica específica.
+</Info>
+
+---
+
+## Cria Campanha
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Registra uma nova campanha no CRIS para a respectiva unidade e retorna o ID para ser usado em outros endpoints como parâmetro ou filtro.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/criaCampanha` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Body (JSON)
+
+<ParamField body="nome" type="string" required>
+  Nome da campanha a ser criada.
+</ParamField>
+
+<ParamField body="clinica" type="string" required>
+  ID da clínica. Diferente dos endpoints GET, aqui **sempre** é obrigatório passar.
+</ParamField>
+
+### Exemplo de Requisição
+
+```json
+{
+  "nome": "Teste api LUCAS",
+  "clinica": "1"
+}
+```
+
+### Resposta
+
+O endpoint retorna o **ID da campanha criada**, que pode ser usado nos endpoints:
+- [`cadastraCliente`](/cris/entrada/atracao#cadastra-contato-novo)
+- [`atualizaCadastroCliente`](/cris/entrada/atracao#atualiza-contato)
+- [`lista_venda_orcamento`](/cris/saida/conversao#lista-orcamentos-com-venda-detalhada)

@@ -1,0 +1,271 @@
+---
+title: "Principais Campos Usados"
+description: "Referência completa de todos os campos nativos e personalizados de Contato e Negócio no Bitrix24 customizado pela CR Sistemas."
+icon: "table"
+---
+
+<Note>
+  Os campos marcados como **personalizados** foram criados pela CR Sistemas. Os campos **nativos** são padrão do Bitrix24.
+</Note>
+
+## Campos de Contato
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Primeiro Nome | `NAME` | Nativo |
+| Segundo Nome | `SECOND_NAME` | Nativo |
+| Sobrenome | `LAST_NAME` | Nativo |
+| Contact ID | `ID` | Nativo |
+| Telefone (nativo) | `PHONE` | Retorna todos os telefones preenchidos para o contato |
+| Telefone (todos) | `UF_CRM_1673035980` | Campo personalizado — usado para **atualizar telefone via automação** em vez do campo nativo `PHONE` |
+| Email (nativo) | `EMAIL` | Retorna todos os e-mails preenchidos para o contato |
+| Email (string) | `UF_CRM_1676052930` | Campo personalizado — usado para **atualizar e-mail via automação** em vez do campo nativo `EMAIL` |
+| Data de nascimento | `BIRTHDATE` | Nativo |
+| Observação | `COMMENTS` | Nativo |
+
+---
+
+## Campos de Negócio
+
+### Identificação e Dados Básicos
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Nome | `TITLE` | Padrão preenchido com `{ID_deal} \| Nome completo do contato` |
+| Contato vinculado | `CONTACT_ID` | Contact ID |
+| Responsável | `ASSIGNED_BY_ID` | — |
+| Criado por | `CREATED_BY_ID` | — |
+| Teste | `UF_CRM_1632755419` | `N` = não \| `Y` = sim |
+
+### Fases e Automação
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Fase (nativo) | `STAGE_ID` | Use **apenas para listar/filtrar** negócios por fase. Ver tabela de IDs abaixo. |
+| Fase (personalizado) | `UF_CRM_1669405845` | Use para **mudar o negócio de fase via automação** — preencha com o nome por extenso da fase. Ex: `Perdas` |
+
+**IDs do campo `STAGE_ID`:**
+
+| Nome da Fase | ID |
+|---|---|
+| Nova oportunidade | `NEW` |
+| Repique | `PREPARATION` |
+| Tentativa de contato | `PREPAYMENT_INVOICE` |
+| Em contato | `EXECUTING` |
+| Buscar / cadastrar no ERP | `FINAL_INVOICE` |
+| Agendado | `1` |
+| Confirmado | `2` |
+| Em negociação | `3` |
+| Perdas | `LOSE` |
+| Venda Cancelada | `4` |
+| Venda realizada | `WON` |
+
+---
+
+### Datas e Controle de Criação
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Criado em (nativo) | `DATE_CREATE` | Somente leitura. Como o servidor Bitrix24 fica na Rússia, pode haver variação de **±6h no fuso horário**. |
+| Criado em (deal) `[Relatório]` | `UF_CRM_1648177511` | Campo personalizado com automação de correção de fuso horário. **Recomendado para filtros de listagem.** |
+
+---
+
+### Origem e UTMs
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Fonte | `SOURCE_ID` | Editado via automação com base na origem do lead. Ver tabela de IDs abaixo. |
+| Informações da fonte | `SOURCE_DESCRIPTION` | Preenchido manualmente ou via automação no padrão: `{utm_campaign} {campaign_id} - {utm_medium} - {utm_content}` |
+| UTM Source | `UTM_SOURCE` | Nativo |
+| UTM Medium | `UTM_MEDIUM` | Nativo |
+| UTM Campaign | `UTM_CAMPAIGN` | Nativo |
+| UTM Content | `UTM_CONTENT` | Nativo |
+| UTM Term | `UTM_TERM` | Nativo |
+| Campaign ID (deal) | `UF_CRM_1651849445` | Campo personalizado preenchido via automação |
+
+**IDs do campo `SOURCE_ID`:**
+
+| Fonte | ID |
+|---|---|
+| Facebook | `CALLBACK` |
+| Instagram | `CALL` |
+| Formulário do site | `WEBFORM` |
+| WhatsApp | `5` |
+| TikTok | `48` |
+| E-mail | `37` |
+| TV | `6` |
+| Revista | `7` |
+| Agendamento on-line | `BOOKING` |
+| Rádio | `40` |
+| Jornal | `8` |
+| Outdoor | `9` |
+| Panfletos / Folder | `10` |
+| Voucher | `11` |
+| Vitrine / Passou na frente | `14` |
+| Indicação | `15` |
+| Venda interna | `34` |
+| Ação Indique e Ganhe | `28` |
+| Influenciadores | `17` |
+| Google Ads | `18` |
+| Busca no Google | `29` |
+| Chat do site | `24` |
+| Assessoria de Imprensa | `25` |
+| Parcerias | `26` |
+| Landing Page da Unidade | `RC_GENERATOR` |
+| YouTube | `30` |
+| Ecommerce / Marketplace | `31` |
+| Mala Direta | `41` |
+| Reativação de base | `35` |
+| Licenciada Home Based | `32` |
+| Aplicativo | `36` |
+| Particular do colaborador | `39` |
+| Fluxo de nutrição | `38` |
+| Venda Avulsa | `42` |
+| Telefone / Ligação | `43` |
+| Fidelidade | `45` |
+| Prospecção ativa | `46` |
+| Site | `47` |
+| \[Expansão\] Indicação Orgânica ou de licenciado | `27` |
+| \[Expansão\] Landing Page Expansão | `STORE` |
+| Ads \[Automação\] | `33` |
+| Ecossistema Grupo Boto | `44` |
+| Vendas recorrentes | `REPEAT_SALE` |
+| Eventos | `UC_QLOVIM` |
+
+---
+
+### Classificação da Unidade
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Unidade Definitiva `[Relatório]` | `UF_CRM_1621027933376` | String fixa, sempre preenchida via automação. Ver lista completa abaixo. |
+| \[Automação\] Serviço | `UF_CRM_1669147796` | Preenchido via automação com base na Campanha e chaves `{Nome do Serviço}` |
+
+<Accordion title="Ver todas as opções de Unidade Definitiva">
+
+```
+não selecionado
+DF Brasília
+GO Goiânia
+GO Rio Verde
+MA São Luís
+MG Curvelo
+MG Divinópolis
+MG Governador Valadares
+MG Uberlândia
+MS Campo Grande
+MS Três Lagoas
+MT Primavera do Leste
+PR Cascavel
+PR Curitiba
+PR Londrina
+PR Maringá
+RS Santo Ângelo
+SC Chapecó
+SC Joinville
+SP Araraquara
+SP Araras
+SP Assis
+SP Atibaia
+SP Barretos
+SP Bauru
+SP Botucatu
+SP Bragança Paulista
+SP Catanduva
+SP Caçapava
+SP Campinas
+SP Capivari
+SP Garça
+SP Guarulhos
+SP Indaiatuba
+SP Itatiba
+SP Itu
+SP Jaboticabal
+SP Limeira
+SP Lins
+SP Marília
+SP Mirassol
+SP Novo Horizonte
+SP Paraguaçu Paulista
+SP Paulínia
+SP Piracicaba
+SP Presidente Prudente
+SP Ribeirão Preto
+SP Rio Claro
+SP São Caetano do Sul
+SP São Carlos
+SP São José do Rio Preto
+SP São Paulo - Perdizes
+SP São Paulo - Tatuapé
+SP Sorocaba
+SP Valinhos
+Sede OligoFlora Brasil
+Não tem Oligo perto de mim
+```
+
+</Accordion>
+
+---
+
+### Tipo de Orçamento
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| Tipo de Orçamento | `UF_CRM_1619793389604` | Resumo do que foi comprado. Se tiver "Linha" no nome, é produto; caso contrário, é serviço. Ver tabela de IDs abaixo. |
+
+| Tipo | ID |
+|---|---|
+| Avaliações e consultas | `1109` |
+| Bem-estar e funcionais | `255` |
+| Corporais | `249` |
+| Faciais e pele | `251` |
+| Epilação | `253` |
+| Minimamente invasivos | `1111` |
+| Linha Day-by-Day Acessórios | `1113` |
+| Linha Day-by-Day Bem-estar e saúde | `1115` |
+| Linha Day-by-Day Corporais | `1161` |
+| Linha Day-by-Day Faciais e pele | `1163` |
+| Linha Day-by-Day Nutra | `1165` |
+| Linha Day-by-Day Outros | `1167` |
+| Linha Profissional Acessórios | `1169` |
+| Linha Profissional Bem-estar e saúde | `1171` |
+| Linha Profissional Corporais | `1173` |
+| Linha Profissional Faciais e pele | `1175` |
+| Linha Profissional Insumos | `1177` |
+| Linha Profissional Manipulados | `1699` |
+
+---
+
+### Motivo da Perda
+
+| Nome | ID no Bitrix | Observação |
+|---|---|---|
+| \[Unidade\] Motivo da perda | `UF_CRM_1619794107548` | Campo lista. Ver IDs abaixo. |
+
+| Motivo | ID |
+|---|---|
+| Clicou sem querer | `325` |
+| Nunca respondeu | `327` |
+| Perdeu interesse | `329` |
+| Comprou em outra clínica | `331` |
+| Parou de responder | `333` |
+| Número inválido ou inexistente | `1179` |
+| Não tenho dinheiro/crédito | `1205` |
+| Já cadastrou recentemente | `1225` |
+| Problemas de saúde pessoal, família, pets | `1237` |
+| É de outra cidade | `1805` |
+| Mudou de cidade | `1233` |
+| Propaganda | `1231` |
+| Interno / colaborador | `1227` |
+| \[2 Whats\] Comprou e quer agendar no outro número | `1229` |
+| Buscando emprego | `1827` |
+| Já comprou recentemente | `2017` |
+| Alerta!!! não quer contato / não chamar | `2097` |
+| Descadastrou | `2099` |
+| Cadastro / lançamento errado | `2137` |
+| Faltou e não respondeu mais | `2705` |
+| Desmarcou e não respondeu mais | `2707` |
+| Fez orçamento e não respondeu mais | `2709` |
+| Migração de sistema | `731` |
+| Tem interesse, mas não pode no momento | `4105` |

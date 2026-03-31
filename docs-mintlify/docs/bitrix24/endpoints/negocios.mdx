@@ -1,0 +1,116 @@
+---
+title: "Negócios"
+description: "Endpoints para listar, obter, editar negócios e gerenciar fases do funil no Bitrix24."
+icon: "briefcase"
+---
+
+## Lista Negócios
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Lista os negócios para os filtros e campos selecionados na requisição. Retorna apenas negócios que a unidade tem permissão para visualizar.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.deal.list` |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/deals/crm-deal-list.html) |
+
+### Query Params
+
+<ParamField query="FIELDS[{id_do_campo}]" type="string">
+  Filtros e seleção de campos desejados.
+
+  Exemplo: `FIELDS[UF_CRM_1621027933376] = SP São José do Rio Preto`
+
+  Consulte a [lista de campos principais](/bitrix24/campos-principais) para os IDs disponíveis.
+</ParamField>
+
+---
+
+## Obtém Negócio
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Retorna todos os campos que o negócio possui — nativos e personalizados.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.deal.get` |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/deals/crm-deal-get.html) |
+
+### Query Params
+
+<ParamField query="ID" type="integer" required>
+  ID do negócio. Ex: `ID = {id_do_negocio}`
+</ParamField>
+
+---
+
+## Edita Negócio / Muda de Fase / Altera Nº da Tentativa de Contato
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Edita os campos do negócio que forem passados como parâmetro, **sem alterar os demais campos** não citados. Também utilizado para mover o negócio de fase e alterar o número da tentativa de contato.
+
+**Gatilho:** Por requisição via API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| Endpoint | `crm.deal.update` |
+| Headers | nenhum |
+| Documentação nativa | [apidocs.bitrix24.com](https://apidocs.bitrix24.com/api-reference/crm/deals/crm-deal-update.html) |
+
+### Query Params
+
+<ParamField query="ID" type="integer" required>
+  ID do negócio. Ex: `ID = {id_do_negocio}`
+</ParamField>
+
+<ParamField query="FIELDS[UF_CRM_1669405845]" type="string">
+  **Mudar o negócio de fase.** Preencha com o nome por extenso da fase desejada.
+
+  Exemplo: `FIELDS[UF_CRM_1669405845] = Tentativa de contato`
+
+  Isso aciona a automação que move o negócio para a respectiva fase.
+
+  Fases disponíveis:
+
+  | Nome da Fase | ID nativo (`STAGE_ID`) |
+  |---|---|
+  | Nova oportunidade | `NEW` |
+  | Repique | `PREPARATION` |
+  | Tentativa de contato | `PREPAYMENT_INVOICE` |
+  | Em contato | `EXECUTING` |
+  | Buscar / cadastrar no ERP | `FINAL_INVOICE` |
+  | Agendado | `1` |
+  | Confirmado | `2` |
+  | Em negociação | `3` |
+  | Perdas | `LOSE` |
+  | Venda Cancelada | `4` |
+  | Venda realizada | `WON` |
+</ParamField>
+
+<ParamField query="FIELDS[UF_CRM_1636587029]" type="string">
+  **Alterar o número da tentativa de contato.** Preencha com o ID da tentativa.
+
+  Exemplo: `FIELDS[UF_CRM_1636587029] = 1243` → altera o campo para **3ª tentativa**
+</ParamField>
+
+<Warning>
+  Para mudar o negócio de fase via automação, utilize o campo personalizado `UF_CRM_1669405845` (e não o campo nativo `STAGE_ID`). O campo nativo deve ser usado **apenas para listagem/filtro** por fase.
+</Warning>

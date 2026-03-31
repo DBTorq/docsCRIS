@@ -1,0 +1,144 @@
+---
+title: "Atração — Saída"
+description: "Endpoints que exportam dados de contatos (prospects e clientes) do CRIS."
+icon: "user-plus"
+---
+
+## Novo Contato Criado no CRIS
+
+<Warning>
+  **Status: Melhoria futura — indisponível no momento**
+</Warning>
+
+Quando um novo contato é criado diretamente no CRIS, um webhook o exporta para o CRM de modo que não haja divergências na base.
+
+**Gatilho:** Novo contato criado na tela **Prospect**.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| Saída de dados | Body |
+| Formato | JSON |
+| Autenticação | Nenhuma |
+| Link do webhook | Informar ao time CR |
+
+### Campos Retornados
+
+- Contato: ID
+- Contato: Criado em
+- Contato: Nome
+- Contato: Telefone
+- Contato: Email
+- Contato: Canal — mais recente
+- Contato: Campanha/Ação — mais recente
+- Contato: Unidade
+
+---
+
+## Lista Prospects e Clientes
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Retorna um agrupamento das telas **Cliente** e **Prospecção de Clientes** do CRIS.
+
+**Gatilho:** Por requisição de API.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `GET` |
+| URL | `https://cris.clinicaderesultado.com.br/rest/v1/lista_cliente` |
+
+### Headers
+
+```http
+Content-Type: application/json
+Authorization: {token_gerado_pelo_loginApi}
+```
+
+### Query Params
+
+<ParamField query="pagina_atual" type="integer" required>
+  Número da página atual. Ex: `1`
+</ParamField>
+
+<ParamField query="por_pagina" type="integer" required>
+  Registros por página. Ex: `20`
+
+  <Note>Recomenda-se usar um número baixo para não sobrecarregar a API.</Note>
+</ParamField>
+
+<ParamField query="clinica" type="integer" required>
+  ID da clínica. Preenchido automaticamente para usuários de clínica. **Obrigatório para admin_master.**
+</ParamField>
+
+<ParamField query="nome" type="string">
+  Busca por nome — correspondência mais próxima. Ex: `teste`
+</ParamField>
+
+<ParamField query="criado_em_de" type="string">
+  Data de criação inicial em formato SQL. Ex: `2025-07-29`
+</ParamField>
+
+<ParamField query="criado_em_ate" type="string">
+  Data de criação final em formato SQL. Ex: `2025-07-29`
+</ParamField>
+
+<ParamField query="data_nascimento_de" type="string">
+  Data de nascimento inicial em formato SQL. Ex: `1990-01-01`
+</ParamField>
+
+<ParamField query="data_nascimento_ate" type="string">
+  Data de nascimento final em formato SQL. Ex: `1991-01-01`
+</ParamField>
+
+<ParamField query="email" type="string">
+  Filtro por e-mail. Ex: `lucas3@teste.com`
+</ParamField>
+
+<ParamField query="indicado_por" type="integer">
+  ID do cliente indicador. Ex: `15`
+</ParamField>
+
+<ParamField query="indicado" type="integer">
+  `0` = não foi indicado | `1` = foi indicado
+</ParamField>
+
+<ParamField query="inativo" type="integer">
+  `0` = ativo | `1` = inativo
+</ParamField>
+
+<ParamField query="telefone" type="string">
+  Telefone principal no formato `DDDXXXXXXXXX`. Ex: `17981212118`
+</ParamField>
+
+<ParamField query="telefone_secundario" type="string">
+  Telefone secundário no formato `DDDXXXXXXXXX`.
+</ParamField>
+
+### Campos Retornados
+
+- Contato: ID
+- Contato: Criado Por
+- Contato: Criado Em
+- Contato: Nome
+- Contato: Data de nascimento
+- Contato: Profissão
+- Contato: E-mail
+- Contato: Telefone Principal
+- Contato: Telefone Secundário
+- Contato: Interesses
+- Contato: Importado em
+- Contato: Status
+- Contato: Indicação
+- Contato: Indicado por
+- Contato: Observações
+- Contato: Inativo
+- Contato: Canal — mais recente
+- Contato: Campanha/Ação — mais recente
+- Contato: Unidade
+
+<Note>
+  O endpoint respeita o nível de acesso do usuário — mostrando entidades apenas da respectiva unidade.
+</Note>

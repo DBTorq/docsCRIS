@@ -1,0 +1,32 @@
+---
+title: "Retenção — Entrada"
+description: "Webhook de envio de pesquisa de satisfação quando um orçamento é aprovado no CRIS."
+icon: "star"
+---
+
+## Envio de Pesquisa de Satisfação quando Orçamento é Gerado
+
+<Check>
+  **Status: Disponível**
+</Check>
+
+Quando um orçamento é aprovado diretamente no CRIS, um webhook é enviado com o link de pesquisa de satisfação do cliente.
+
+**Gatilho:** Orçamento atualizado para Status = **Aprovado** na tela **Ficha Financeira**.
+
+| Propriedade | Valor |
+|---|---|
+| Método HTTP | `POST` |
+| Saída de dados | Body |
+| Formato | JSON |
+| Autenticação | Nenhuma |
+| Link do webhook | Informar ao time CR |
+
+### Campos Retornados
+
+- Contato: ID
+- Contato: Arquivo — Pesquisa de Satisfação `[link]`
+
+<Info>
+  O webhook apenas informa o link da pesquisa. O **envio da pesquisa** em si deve ser realizado por outro canal (como WhatsApp ou e-mail, por exemplo).
+</Info>

@@ -225,43 +225,43 @@ components:
       properties:
         cliente_nome:
           type: string
-          example: Paula Regina Schempf Cattan
+          example: Nome Cliente
 
         cliente_id:
           type: string
-          example: "23914"
+          example: "123456"
 
         clinica_id:
           type: string
-          example: "39"
+          example: "11"
 
         clinica_nome:
           type: string
-          example: OligoFlora Perdizes
+          example: OligoFlora Unidade
 
         telefone:
           type: string
-          example: "(11) 99623-0540"
+          example: "(00) 0000-0000"
 
         data:
           type: string
-          example: "14/03/2026 13:00:00"
+          example: "00/00/0000 00:00:00"
 
         categoria:
           type: string
-          example: Corporais
+          example: Categoria
 
         unidade:
           type: string
-          example: OligoFlora Perdizes
+          example: OligoFlora Unidade
 
         servico_nome:
           type: string
-          example: ENDYMED RF CORPORAL
+          example: Nome do Procedimento
 
         servico_id:
           type: string
-          example: "2282"
+          example: "0000"
 
         qtd_contratada:
           type: integer

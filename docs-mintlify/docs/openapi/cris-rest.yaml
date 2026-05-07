@@ -180,6 +180,113 @@ components:
     JsonResponse:
       description: Resposta JSON do CRIS (estrutura variável por endpoint).
 
+    SaldoTratamentoResponse:
+      type: array
+      items:
+        type: object
+        properties:
+          error:
+            type: integer
+            example: 0
+
+          error_msg:
+            type: string
+            example: ""
+
+          error_type:
+            type: string
+            example: ""
+
+          data:
+            $ref: "#/components/schemas/SaldoData"
+
+          msg:
+            type: string
+            example: ok
+
+    SaldoData:
+      type: object
+      properties:
+        total_paginas:
+          type: integer
+          example: 1
+
+        qtd_saldos:
+          type: string
+          example: "19"
+
+        saldos:
+          type: array
+          items:
+            $ref: "#/components/schemas/Saldo"
+
+    Saldo:
+      type: object
+      properties:
+        cliente_nome:
+          type: string
+          example: Paula Regina Schempf Cattan
+
+        cliente_id:
+          type: string
+          example: "23914"
+
+        clinica_id:
+          type: string
+          example: "39"
+
+        clinica_nome:
+          type: string
+          example: OligoFlora Perdizes
+
+        telefone:
+          type: string
+          example: "(11) 99623-0540"
+
+        data:
+          type: string
+          example: "14/03/2026 13:00:00"
+
+        categoria:
+          type: string
+          example: Corporais
+
+        unidade:
+          type: string
+          example: OligoFlora Perdizes
+
+        servico_nome:
+          type: string
+          example: ENDYMED RF CORPORAL
+
+        servico_id:
+          type: string
+          example: "2282"
+
+        qtd_contratada:
+          type: integer
+          example: 1
+
+        qtd_utilizado:
+          type: integer
+          example: 1
+
+        qtd_agendado:
+          type: integer
+          example: 0
+
+        qtd_cancelado:
+          type: integer
+          example: 0
+
+        qtd_transferido:
+          type: integer
+          example: 0
+
+        saldo:
+          type: integer
+          example: 0
+
 paths:
   /loginApi:
     post:
@@ -498,6 +605,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/JsonResponse"
+
+  /listaSaldoTratamento:
+    get:
+      tags: [Saída — Entrega e retenção]
+      summary: Lista Saldo de Tratamento
+      description: Equivalente ao Relatório de Saldo de Tratamentos.
+      operationId: listaSaldoTratamento
+      parameters:
+        - $ref: "#/components/parameters/PaginaAtual"
+        - $ref: "#/components/parameters/PorPagina"
+        - $ref: "#/components/parameters/ClinicaMaster"
+        - name: cliente
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lista paginada de saldos do cliente.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaldoTratamentoResponse"
 
   /statusAgendamento:
     get:
